@@ -24,13 +24,34 @@ def parse_float(s: str) -> float:
         print(f'Invalid float: {s}')
 
 # Functions
-def get_course_name(courses: list[dict], code) -> None:
-    # placeholder
-    pass
+def get_course_name(courses: list[dict], code: str) -> None:
+    def strip_compsci(code: str) -> str:
+        return code.replace("COMPSCI", "")
 
-def get_course_code(courses: list[dict], name) -> None:
-    # placeholder
-    pass
+    code = strip_compsci(code.upper())
+
+    # Iterate through courses and return the first that matches the code
+    for course in courses:
+        if "course_code" in course and strip_compsci(course["course_code"]) == code:
+            print(course["name"])
+            return
+    print("Course code not found.")
+
+def get_course_code(courses: list[dict], query: str) -> None:
+    # Make query string lowercase
+    query = query.lower()
+
+    # Returns true if the query is a substring of the course name or matches any alias
+    def matches(course):
+        return course["name"].lower().startswith(query) or query in course["aliases"]
+
+    # Gather a list of all courses that match the query
+    results = [course for course in courses if matches(course)]
+    if len(results) == 0:
+        print("No matches.")
+
+    for course in results:
+        print(f'{course["course_code"]}: ({course["name"]})')
 
 def grade_to_gpa(grade: str) -> int:
     grade = grade.upper()
@@ -114,11 +135,11 @@ def main() -> None:
 
     flag = args[0]
 
-    if flag == "-c" and len(args) == 2:
-        get_course_name(args[1])
-    elif flag == "-n" and len(args) > 1:
+    if flag == "-n" and len(args) == 2:
+        get_course_name(course_json, args[1])
+    elif flag == "-c" and len(args) > 1:
         name = " ".join(args[1:])
-        get_course_code(args[1])
+        get_course_code(course_json, name)
     elif flag == "-gpa" and len(args) == 2:
         grade_to_gpa(args[1])
     elif flag == "-g" and len(args) == 2:
