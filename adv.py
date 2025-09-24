@@ -141,7 +141,7 @@ def main() -> None:
         name = " ".join(args[1:])
         get_course_code(course_json, name)
     elif flag == "-gpa" and len(args) == 2:
-        grade_to_gpa(args[1])
+        print(grade_to_gpa(args[1]))
     elif flag == "-g" and len(args) == 2:
         print_gpa_to_grade(int(args[1]))
     elif flag == "-agg" and len(args) > 1:
